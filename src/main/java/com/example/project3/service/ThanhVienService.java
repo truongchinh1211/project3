@@ -17,8 +17,6 @@ import java.util.Optional;
 @Service
 public class ThanhVienService {
 
-    @Autowired
-    Convert convert;
 
     @Autowired
     ThanhVienRepository thanhVienRepository;

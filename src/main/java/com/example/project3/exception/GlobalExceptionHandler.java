@@ -14,27 +14,27 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InternalError.class)
     public ResponseEntity<String> handleInternalServerError(Exception ex) {
         logger.error("Internal server error: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Internal server error\"}");
     }
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         logger.error("Lỗi: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \""+ex.getMessage()+"\"}");
     }
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
         logger.error("Lỗi: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \""+ex.getMessage()+"\"}");
     }
 
     @ExceptionHandler(AuthenticateException.class)
     public ResponseEntity<String> handleAuthenticateException(AuthenticateException ex) {
         logger.error("Lỗi: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Xác thực người dùng thất bại, Vui lòng đăng nhập lại");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \"Xác thực người dùng thất bại, Vui lòng đăng nhập lại\"}");
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
         logger.error("data error: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có vấn đề xảy ra!! vui lòng thử lại");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \"Có vấn đề xảy ra!! vui lòng thử lại\"}");
     }
 }

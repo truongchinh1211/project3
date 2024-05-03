@@ -39,10 +39,18 @@ public class ThanhVienService {
         if (thanhVienOptional.isPresent()) {
             ThanhVien thanhVien = thanhVienOptional.get();
             if (thanhVien.getPassword().equals(password)) {
+                thanhVien.setPassword(null);
                 return thanhVien;
             }
         }
         throw new ResourceNotFoundException("Tài khoản hoặc mật khẩu không đúng!!");
+    }
+    public ThanhVien findByEmail(String email){
+        Optional<ThanhVien> thanhVienOptional = thanhVienRepository.findByEmail(email);
+        if (thanhVienOptional.isPresent())
+            return thanhVienOptional.get();
+        throw new ResourceNotFoundException("email không đúng!!");
+
     }
 
     @Transactional

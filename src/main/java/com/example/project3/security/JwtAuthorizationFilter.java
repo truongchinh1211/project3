@@ -1,5 +1,6 @@
 package com.example.project3.security;
 
+import com.example.project3.dto.ThanhVienDTO;
 import com.example.project3.entity.ThanhVien;
 import com.example.project3.service.JwtService;
 import com.example.project3.service.ThanhVienService;
@@ -50,7 +51,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         if(jwtService.isValidToken(token)) {
             String email = jwtService.extractEmailFromToken(token);
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                ThanhVien thanhVien = thanhVienService.findByEmail(email);
+                ThanhVienDTO thanhVien = thanhVienService.findByEmail(email);
                 UserDetails userDetails = new UserDetails() {
                     @Override
                     public Collection<? extends GrantedAuthority> getAuthorities() {

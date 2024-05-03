@@ -29,36 +29,35 @@ public class ThanhVienService {
         return thanhVienDTO;
     }
 
-    public ThanhVien login(String email, String password) {
+    public ThanhVienDTO login(String email, String password) {
         Optional<ThanhVien> thanhVienOptional = thanhVienRepository.findByEmail(email);
         if (thanhVienOptional.isPresent()) {
             ThanhVien thanhVien = thanhVienOptional.get();
             if (thanhVien.getPassword().equals(password)) {
                 thanhVien.setPassword(null);
-                thanhVien.setThongTinSDs(null);
-                return thanhVien;
+                return convertToDTO(thanhVien);
             }
         }
         throw new ResourceNotFoundException("Tài khoản hoặc mật khẩu không đúng!!");
     }
-    public ThanhVien findByEmail(String email){
+    public ThanhVienDTO findByEmail(String email){
         Optional<ThanhVien> thanhVienOptional = thanhVienRepository.findByEmail(email);
         if (thanhVienOptional.isPresent())
-            return thanhVienOptional.get();
+            return convertToDTO(thanhVienOptional.get());
         throw new ResourceNotFoundException("email không đúng!!");
 
     }
 
     @Transactional
-    public ThanhVien create(ThanhVienDTO thanhVienDTO){
+    public ThanhVienDTO create(ThanhVienDTO thanhVienDTO){
         Optional<ThanhVien> thanhVienOptional = thanhVienRepository.findByEmail(thanhVienDTO.getEmail());
         if(thanhVienOptional.isPresent())
             throw new DataIntegrityViolationException("Email đã được sử dụng !!!");
         ThanhVien thanhVien = convertToEntity(thanhVienDTO);
-        return thanhVienRepository.save(thanhVien);
+        return convertToDTO(thanhVienRepository.save(thanhVien));
     }
     @Transactional
-    public ThanhVien update(ThanhVienDTO updatedThanhVienDTO) {
+    public ThanhVienDTO update(ThanhVienDTO updatedThanhVienDTO) {
         // Kiểm tra xem thành viên có tồn tại không
         ThanhVien existingThanhVien = thanhVienRepository.findById(updatedThanhVienDTO.getMaTV())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thành viên với mã: " + updatedThanhVienDTO.getMaTV()));
@@ -70,7 +69,7 @@ public class ThanhVienService {
             }
         }
         existingThanhVien = convertToEntity(updatedThanhVienDTO);
-        return thanhVienRepository.save(existingThanhVien);
+        return convertToDTO(thanhVienRepository.save(existingThanhVien));
     }
     @Transactional
     public void delete(long maTV) {

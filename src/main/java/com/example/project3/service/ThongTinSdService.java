@@ -15,10 +15,10 @@ public class ThongTinSdService {
     private ThongTinSDRepository thongTinSDRepository;
 
     @Transactional
-    public ThongTinSd datCho(ThongTinSdDTO thongTinSdDTO){
+    public ThongTinSd datCho(ThongTinSdDTO thongTinSdDTO) throws Exception {
         ThongTinSd thongTinSd = convertToEntity(thongTinSdDTO);
-        (thongTinSDRepository.findByTGDatCho(thongTinSd.getTGDatCho().toLocalDate()).isPresent()){
-            throw new Exception()
+        if(thongTinSDRepository.findByTGDatCho(thongTinSd.getTGDatCho().toLocalDate()).isPresent()){
+            throw new Exception("Lỗi");
         }
         return thongTinSDRepository.save(thongTinSd);
     }

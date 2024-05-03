@@ -1,5 +1,6 @@
 package com.example.project3.controller;
 
+import com.example.project3.dto.ThanhVienDTO;
 import com.example.project3.entity.ThanhVien;
 import com.example.project3.service.ThanhVienService;
 import com.example.project3.service.JwtService;
@@ -36,10 +37,10 @@ public class ThanhVienController {
     public ResponseEntity<Map<String,Object>> checkLogin(@RequestBody Map<String,String> loginRequest) throws JOSEException {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
-        ThanhVien thanhVien = thanhVienService.login(email,password);
+        ThanhVienDTO thanhVienDTO = thanhVienService.login(email,password);
         String token = jwtService.generateToken(email);
         Map<String,Object> response = new HashMap<>();
-        response.put("thanhVien",thanhVien);
+        response.put("thanhVien",thanhVienDTO);
         response.put("token",token);
         return ResponseEntity.ok(response);
     }

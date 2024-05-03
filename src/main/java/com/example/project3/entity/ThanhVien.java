@@ -25,5 +25,5 @@ public class ThanhVien {
     @Column(name="password")
     private String password;
     @OneToMany(mappedBy = "thanhVien", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<ThongTinSD> thongTinSDs;
+    private List<ThongTinSd> thongTinSds;
 }

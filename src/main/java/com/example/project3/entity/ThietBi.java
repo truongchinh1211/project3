@@ -17,5 +17,5 @@ public class ThietBi {
     @Column (name = "MoTaTB")
     private String MoTaTB;
     @OneToMany(mappedBy = "thietBi", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<ThongTinSD> thongTinSDs;
+    private List<ThongTinSd> thongTinSds;
 }

@@ -109,10 +109,10 @@ public class ThanhVienService {
     }
 
     @Transactional
-    public ThanhVien changePassword(long maTV, String newPassword) {
+    public ThanhVienDTO changePassword(long maTV, String newPassword) {
         Optional<ThanhVien> thanhVienOptional = thanhVienRepository.findById(maTV);
         ThanhVien thanhVien = thanhVienOptional.get();
         thanhVien.setPassword(newPassword);
-        return thanhVienRepository.save(thanhVien);
+        return convertToDTO(thanhVienRepository.save(thanhVien));
     }
 }

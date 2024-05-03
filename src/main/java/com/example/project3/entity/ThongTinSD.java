@@ -24,4 +24,6 @@ public class ThongTinSD {
     private LocalDateTime TGMuon;
     @Column(name = "TGTra")
     private LocalDateTime TGTra;
+    @Column(name = "TGDatCho")
+    private LocalDateTime TGDatCho;
 }

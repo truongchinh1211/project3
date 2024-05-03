@@ -35,6 +35,7 @@ public class ThanhVienService {
             ThanhVien thanhVien = thanhVienOptional.get();
             if (thanhVien.getPassword().equals(password)) {
                 thanhVien.setPassword(null);
+                thanhVien.setThongTinSDs(null);
                 return thanhVien;
             }
         }

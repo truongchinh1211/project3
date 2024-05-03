@@ -33,7 +33,7 @@ public class ThanhVienController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping()
+    @GetMapping("/test")
     public ResponseEntity<ThanhVien>test(){
         return ResponseEntity.ok(thanhVienService.findByEmail("nntchinh2001@gmail.com"));
     }

@@ -1,13 +1,12 @@
 package com.example.project3.security;
 
 import com.example.project3.dto.ThanhVienDTO;
-import com.example.project3.entity.ThanhVien;
+import com.example.project3.exception.AuthenticateException;
+import com.example.project3.exception.GlobalExceptionHandler;
 import com.example.project3.service.JwtService;
 import com.example.project3.service.ThanhVienService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Component
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -33,6 +31,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Autowired
     private ThanhVienService thanhVienService;
+
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtService jwtService, ThanhVienService thanhVienService) {
         super(authenticationManager);
@@ -44,7 +43,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader("Authorization");
         if(header==null || !header.startsWith("Bearer ")){
-            chain.doFilter(request,response);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Unauthorized: Invalid header");
             return;
         }
         String token = header.replace("Bearer","");
@@ -91,7 +91,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+        }else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Unauthorized: Invalid token");
+            return;
         }
     chain.doFilter(request,response);
     }
+
 }

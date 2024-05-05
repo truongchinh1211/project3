@@ -12,23 +12,23 @@ import org.slf4j.LoggerFactory;
 public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     @ExceptionHandler(InternalError.class)
-    public ResponseEntity<String> handleInternalServerError(Exception ex) {
+    public ResponseEntity<String> handleException(InternalError ex) {
         logger.error("Internal server error: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Internal server error\"}");
     }
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+    public ResponseEntity<String> handleException(DataIntegrityViolationException ex) {
         logger.error("Lỗi: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \""+ex.getMessage()+"\"}");
     }
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
+    public ResponseEntity<String> handleException(ResourceNotFoundException ex) {
         logger.error("Lỗi: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \""+ex.getMessage()+"\"}");
     }
 
     @ExceptionHandler(AuthenticateException.class)
-    public ResponseEntity<String> handleAuthenticateException(AuthenticateException ex) {
+    public ResponseEntity<String> handleException(AuthenticateException ex) {
         logger.error("Lỗi: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \"Xác thực người dùng thất bại, Vui lòng đăng nhập lại\"}");
     }

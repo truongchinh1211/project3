@@ -1,8 +1,8 @@
 package com.example.project3.security;
 
+import com.example.project3.exception.GlobalExceptionHandler;
 import com.example.project3.service.JwtService;
 import com.example.project3.service.ThanhVienService;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +32,6 @@ public class SecurityConfig {
     public CustomAccessDeniedHandler customAccessDeniedHandler() {
         return new CustomAccessDeniedHandler();
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

@@ -47,7 +47,7 @@ public class JwtService {
             JWSVerifier verifier = new MACVerifier(secret);
             return signedJWT.verify(verifier);
         } catch (ParseException | JOSEException e) {
-            throw new AuthenticateException(e.getMessage());
+            return false;
         }
     }
 }

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 public class ThongTinSd {
     @Id
-    private int MaTT;
+    private long MaTT;
     @ManyToOne
     @JoinColumn(name = "MaTV")
     private ThanhVien thanhVien;

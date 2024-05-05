@@ -36,7 +36,7 @@ public class ThongTinSdService {
 
     public ThongTinSd convertToEntity(ThongTinSdDTO thongTinSdDTO){
         ThongTinSd thongTinSd = new ThongTinSd();
-        thongTinSd.setMaTT(thongTinSd.getMaTT());
+        thongTinSd.setMaTT(thongTinSdDTO.getMaTT());
         thongTinSd.setThanhVien(thongTinSdDTO.getThanhVien());
         thongTinSd.setTGVao(thongTinSdDTO.getTGVao());
         thongTinSd.setTGTra(thongTinSdDTO.getTGTra());

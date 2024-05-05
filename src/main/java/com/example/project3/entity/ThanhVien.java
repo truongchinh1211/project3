@@ -1,6 +1,7 @@
 package com.example.project3.entity;
 
 
+import com.example.project3.dto.ThanhVienDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,4 +27,16 @@ public class ThanhVien {
     private String password;
     @OneToMany(mappedBy = "thanhVien", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ThongTinSd> thongTinSds;
+
+    public static ThanhVien convertToEntity(ThanhVienDTO thanhVienDTO){
+        ThanhVien thanhVien = new ThanhVien();
+        thanhVien.setEmail(thanhVienDTO.getEmail());
+        thanhVien.setKhoa(thanhVienDTO.getKhoa());
+        thanhVien.setNganh(thanhVienDTO.getNganh());
+        thanhVien.setSDT(thanhVienDTO.getSdt());
+        thanhVien.setMaTV(thanhVienDTO.getMaTV());
+        thanhVien.setHoTen(thanhVienDTO.getHoTen());
+        thanhVien.setPassword(thanhVienDTO.getPassword());
+        return thanhVien;
+    }
 }

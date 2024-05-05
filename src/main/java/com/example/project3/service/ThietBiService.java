@@ -33,10 +33,6 @@ public class ThietBiService {
 
 
     public ThietBiDTO convertToDTO(ThietBi thietBi){
-        ThietBiDTO thietBiDTO = new ThietBiDTO();
-        thietBiDTO.setMaTB(thietBi.getMaTB());
-        thietBiDTO.setTenTB(thietBi.getTenTB());
-        thietBiDTO.setMoTaTB(thietBi.getMoTaTB());
-        return thietBiDTO;
+        return ThietBiDTO.convertToDTO(thietBi);
     }
 }

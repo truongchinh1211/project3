@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @Data
 public class ThongTinSdDTO {
     private long MaTT;
-    private ThanhVien thanhVien;
-    private ThietBi thietBi;
+    private ThanhVienDTO thanhVien;
+    private ThietBiDTO thietBi;
     private LocalDateTime TGVao;
     private LocalDateTime TGMuon;
     private LocalDateTime TGTra;

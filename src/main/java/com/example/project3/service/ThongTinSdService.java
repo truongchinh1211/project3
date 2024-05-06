@@ -31,7 +31,7 @@ public class ThongTinSdService {
     @Autowired
     private ThietBiRepository thietBiRepository;
 
-    @Autowired
+  
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Transactional

@@ -14,6 +14,5 @@ public interface ThongTinSDRepository extends JpaRepository<ThongTinSd,Long> {
     @Query(value = "SELECT * FROM thongtinsd WHERE MaTB = ?1 AND DATE(TGDatCho) = ?2 ", nativeQuery = true)
     Optional<List<ThongTinSd>> findReservations(long MaTB,LocalDate TGDatCho);
 
-    @Query("SELECT t FROM ThongTinSd t WHERE MaTB = ?1 AND t.TGDatCho <= :cutoffTime AND t.TGMuon IS NULL")
-    List<ThongTinSd> findExpiredReservations(long MaTB, LocalDateTime cutoffTime);
+
 }

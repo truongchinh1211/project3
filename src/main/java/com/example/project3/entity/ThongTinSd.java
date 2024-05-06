@@ -1,6 +1,7 @@
 package com.example.project3.entity;
 
 
+import com.example.project3.dto.ThongTinSdDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,4 +27,16 @@ public class ThongTinSd {
     private LocalDateTime TGTra;
     @Column(name = "TGDatCho")
     private LocalDateTime TGDatCho;
+
+    public static ThongTinSd convertToEntity(ThongTinSdDTO thongTinSdDTO){
+        ThongTinSd thongTinSd = new ThongTinSd();
+        thongTinSd.setMaTT(thongTinSdDTO.getMaTT());
+        thongTinSd.setThanhVien(ThanhVien.convertToEntity(thongTinSdDTO.getThanhVien()));
+        thongTinSd.setTGVao(thongTinSdDTO.getTGVao());
+        thongTinSd.setTGTra(thongTinSdDTO.getTGTra());
+        thongTinSd.setTGMuon(thongTinSdDTO.getTGMuon());
+        thongTinSd.setThietBi(ThietBi.convertToEntity(thongTinSdDTO.getThietBi()));
+        thongTinSd.setTGDatCho(thongTinSdDTO.getTGDatCho());
+        return thongTinSd;
+    }
 }

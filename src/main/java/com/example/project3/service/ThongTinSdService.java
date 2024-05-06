@@ -1,15 +1,24 @@
 package com.example.project3.service;
 
 import com.example.project3.dto.ThanhVienDTO;
+import com.example.project3.dto.ThietBiDTO;
 import com.example.project3.dto.ThongTinSdDTO;
 import com.example.project3.entity.ThanhVien;
 import com.example.project3.entity.ThietBi;
 import com.example.project3.entity.ThongTinSd;
 import com.example.project3.exception.ResourceNotFoundException;
+import com.example.project3.repository.ThanhVienRepository;
+import com.example.project3.repository.ThietBiRepository;
 import com.example.project3.repository.ThongTinSDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ThongTinSdService {
@@ -17,47 +26,38 @@ public class ThongTinSdService {
     private ThongTinSDRepository thongTinSDRepository;
 
     @Autowired
-    private ThanhVienService thanhVienService;
+    private ThanhVienRepository thanhVienRepository;
+
+    @Autowired
+    private ThietBiRepository thietBiRepository;
+
+    @Autowired
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Transactional
     public ThongTinSdDTO reserve(ThongTinSdDTO thongTinSdDTO) throws Exception {
-        ThongTinSd thongTinSd = convertToEntity(thongTinSdDTO);
-        if(thongTinSDRepository.findReservations(thongTinSd.getTGDatCho().toLocalDate()).isPresent()){
-            throw new Exception("Lỗi");
+        ThanhVien thanhVien = thanhVienRepository.findByEmail(thongTinSdDTO.getThanhVien().getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thành viên này"));
+        ThietBi thietBi = thietBiRepository.findById(thongTinSdDTO.getThietBi().getMaTB())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thiết bị này"));
+        ThongTinSd thongTinSd = new ThongTinSd();
+        thongTinSd.setTGDatCho(thongTinSdDTO.getTGDatCho());
+        thongTinSd.setThanhVien(thanhVien);
+        thongTinSd.setThietBi(thietBi);
+        if (thongTinSDRepository.findReservations(thietBi.getMaTB(), thongTinSd.getTGDatCho().toLocalDate()).isPresent()) {
+            throw new Exception("Thiết bị đã được đặt trước vào ngày này");
         }
-        return convertToDTO(thongTinSDRepository.save(thongTinSd));
+        scheduler.schedule(() -> check(thongTinSd), 1, TimeUnit.HOURS);
+        return ThongTinSdDTO.convertToDTO(thongTinSDRepository.save(thongTinSd));
+
     }
 
     @Transactional
-    public ThongTinSdDTO muon(ThongTinSdDTO thongTinSdDTO) throws Exception {
-
-        ThongTinSd existedThongTinSd = thongTinSDRepository.findById(thongTinSdDTO.getMaTT())
-                .orElseThrow(() -> new ResourceNotFoundException("không tìm thấy thông tin có mã: "+thongTinSdDTO.getMaTT()));
-        existedThongTinSd.setTGMuon(thongTinSdDTO.getTGMuon());
-        return convertToDTO(thongTinSDRepository.save(existedThongTinSd));
-    }
-
-
-    public ThongTinSd convertToEntity(ThongTinSdDTO thongTinSdDTO){
-        ThongTinSd thongTinSd = new ThongTinSd();
-        thongTinSd.setMaTT(thongTinSdDTO.getMaTT());
-        thongTinSd.setThanhVien(ThanhVien.convertToEntity(thongTinSdDTO.getThanhVien()));
-        thongTinSd.setTGVao(thongTinSdDTO.getTGVao());
-        thongTinSd.setTGTra(thongTinSdDTO.getTGTra());
-        thongTinSd.setTGMuon(thongTinSdDTO.getTGMuon());
-        thongTinSd.setThietBi(ThietBi.convertToEntity(thongTinSdDTO.getThietBi()));
-        thongTinSd.setTGDatCho(thongTinSdDTO.getTGDatCho());
-        return thongTinSd;
-    }
-    public ThongTinSdDTO convertToDTO(ThongTinSd thongTinSd){
-        ThongTinSdDTO thongTinSdDTO = new ThongTinSdDTO();
-        thongTinSdDTO.setMaTT(thongTinSd.getMaTT());
-        thongTinSdDTO.setThanhVien(thongTinSd.getThanhVien());
-        thongTinSdDTO.setTGVao(thongTinSd.getTGVao());
-        thongTinSdDTO.setTGTra(thongTinSd.getTGTra());
-        thongTinSdDTO.setTGMuon(thongTinSd.getTGMuon());
-        thongTinSdDTO.setThietBi(thongTinSd.getThietBi());
-        thongTinSdDTO.setTGDatCho(thongTinSd.getTGDatCho());
-        return thongTinSdDTO;
+    public void check(ThongTinSd thongTinSd) {
+        ThongTinSd existingThongTinSd = thongTinSDRepository.findById(thongTinSd.getMaTT()).orElse(null);
+        if (existingThongTinSd != null){
+            if(existingThongTinSd.getTGMuon()==null)
+                thongTinSDRepository.delete(existingThongTinSd);
+        }
     }
 }

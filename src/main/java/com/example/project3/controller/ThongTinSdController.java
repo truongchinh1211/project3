@@ -40,6 +40,6 @@ public class ThongTinSdController {
         ThongTinSdDTO thongTinSdDTO = new ThongTinSdDTO();
         thongTinSdDTO.setThanhVien(thanhVienDTO);
         thongTinSdDTO.setThietBi(thietBiDTO);
-        thongTinSdService.reserve(thongTinSdDTO);
+        return ResponseEntity.ok(thongTinSdService.reserve(thongTinSdDTO));
     }
 }

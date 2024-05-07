@@ -6,6 +6,8 @@ import com.example.project3.exception.ResourceNotFoundException;
 import com.example.project3.service.ThanhVienService;
 import com.example.project3.service.JwtService;
 import com.nimbusds.jose.JOSEException;
+import jakarta.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,11 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
 
+
 @RestController
 @RequestMapping("/api/v1/user")
 @CrossOrigin("*")
 public class ThanhVienController {
-
     @Autowired
     ThanhVienService thanhVienService;
 
@@ -36,7 +38,7 @@ public class ThanhVienController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> checkLogin(@RequestBody Map<String, String> loginRequest) throws JOSEException {
+        public ResponseEntity<Map<String, Object>> checkLogin(@RequestBody Map<String, String> loginRequest) throws JOSEException {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
         ThanhVienDTO thanhVienDTO = thanhVienService.login(email, password);
@@ -88,6 +90,12 @@ public class ThanhVienController {
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Đổi mật khẩu thành công!!!");
         return ResponseEntity.ok(response);
+    }
+    
+    @PostMapping("/forget-password")
+    public ResponseEntity<?> forgetPassword(@RequestBody Map<String, String> emailRequest) throws MessagingException, UnsupportedEncodingException {
+        String email = emailRequest.get("email");
+        return ResponseEntity.ok(thanhVienService.forgetPassword(email));
     }
 
 }

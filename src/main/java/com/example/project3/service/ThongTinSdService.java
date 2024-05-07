@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class ThongTinSdService {
+
     @Autowired
     private ThongTinSDRepository thongTinSDRepository;
 
@@ -31,7 +33,6 @@ public class ThongTinSdService {
     @Autowired
     private ThietBiRepository thietBiRepository;
 
-  
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Transactional
@@ -55,9 +56,31 @@ public class ThongTinSdService {
     @Transactional
     public void check(ThongTinSd thongTinSd) {
         ThongTinSd existingThongTinSd = thongTinSDRepository.findById(thongTinSd.getMaTT()).orElse(null);
-        if (existingThongTinSd != null){
-            if(existingThongTinSd.getTGMuon()==null)
+        if (existingThongTinSd != null) {
+            if (existingThongTinSd.getTGMuon() == null) {
                 thongTinSDRepository.delete(existingThongTinSd);
+            }
         }
+    }
+
+    public List<ThongTinSdDTO> findByMaTV(long maTV) {
+        List<ThongTinSd> ttSuDung = thongTinSDRepository.getByMaTV(maTV);
+        List<ThongTinSdDTO> ttSuDungDTOList = new ArrayList<>();
+        for (ThongTinSd ttsd : ttSuDung) {
+            ttSuDungDTOList.add(convertToDTO(ttsd));
+        }
+        return ttSuDungDTOList;
+    }
+
+    public ThongTinSdDTO convertToDTO(ThongTinSd ttsd) {
+        ThongTinSdDTO ttsdDTO = new ThongTinSdDTO();
+        ttsdDTO.setMaTT(ttsd.getMaTT());
+        ttsdDTO.setThanhVien(ttsd.getThanhVien().convertToDTO());
+        ttsdDTO.setThietBi(ttsd.getThietBi().convertToDTO());
+        ttsdDTO.setTGVao(ttsd.getTGVao());
+        ttsdDTO.setTGMuon(ttsd.getTGMuon());
+        ttsdDTO.setTGTra(ttsd.getTGTra());
+        ttsdDTO.setTGDatCho(ttsd.getTGDatCho());
+        return ttsdDTO;
     }
 }

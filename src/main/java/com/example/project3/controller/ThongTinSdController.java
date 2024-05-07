@@ -13,12 +13,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/thongtinsd")
 @CrossOrigin("*")
 public class ThongTinSdController {
+
     @Autowired
     private ThongTinSdService thongTinSdService;
     @Autowired
@@ -29,10 +32,16 @@ public class ThongTinSdController {
         return ((UserDetails) principal).getUsername();
     }
 
+    public ThanhVienDTO getDTOFromToken() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+        return thanhVienService.findByEmail(email);
+    }
+
     @PostMapping("datcho")
     public ResponseEntity<ThongTinSdDTO> muon(@RequestBody Map<String, Object> requestData) throws Exception {
         long maTB = Long.parseLong(requestData.get("maTB").toString());
-        LocalDateTime TGDatCho= LocalDateTime.parse(requestData.get("TGDatCho").toString());
+        LocalDateTime TGDatCho = LocalDateTime.parse(requestData.get("TGDatCho").toString());
         ThietBiDTO thietBiDTO = new ThietBiDTO();
         thietBiDTO.setMaTB(maTB);
         ThanhVienDTO thanhVienDTO = new ThanhVienDTO();
@@ -41,5 +50,16 @@ public class ThongTinSdController {
         thongTinSdDTO.setThanhVien(thanhVienDTO);
         thongTinSdDTO.setThietBi(thietBiDTO);
         return ResponseEntity.ok(thongTinSdService.reserve(thongTinSdDTO));
+    }
+
+    @GetMapping("/get-by-matv")
+    public ResponseEntity<Map<String, Object>> getByMaTV() {
+        ThanhVienDTO thanhvienDTO = getDTOFromToken();
+        long maTV = thanhvienDTO.getMaTV();
+
+        List<ThongTinSdDTO> list = thongTinSdService.findByMaTV(maTV);
+        Map<String, Object> response = new HashMap<>();
+        response.put("list", list);
+        return ResponseEntity.ok(response);
     }
 }

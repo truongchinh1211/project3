@@ -39,4 +39,16 @@ public class ThanhVien {
         thanhVien.setPassword(thanhVienDTO.getPassword());
         return thanhVien;
     }
+    
+    public ThanhVienDTO convertToDTO(){
+        ThanhVienDTO thanhVienDTO = new ThanhVienDTO();
+        thanhVienDTO.setMaTV(MaTV);
+        thanhVienDTO.setEmail(email);
+        thanhVienDTO.setHoTen(HoTen);
+        thanhVienDTO.setKhoa(Khoa);
+        thanhVienDTO.setNganh(Nganh);
+        thanhVienDTO.setPassword("");
+        thanhVienDTO.setSdt(SDT);
+        return thanhVienDTO;
+    }
 }

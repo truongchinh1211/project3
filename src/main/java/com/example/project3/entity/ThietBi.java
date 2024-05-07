@@ -28,4 +28,12 @@ public class ThietBi {
         thietBi.setMoTaTB(thietBiDTO.getMoTaTB());
         return thietBi;
     }
+    
+    public ThietBiDTO convertToDTO(){
+        ThietBiDTO thietBiDTO = new ThietBiDTO();
+        thietBiDTO.setMaTB(MaTB);
+        thietBiDTO.setTenTB(TenTB);
+        thietBiDTO.setMoTaTB(MoTaTB);
+        return thietBiDTO;
+    }
 }

@@ -57,7 +57,7 @@ public class ThanhVienController {
         return ResponseEntity.ok(thanhVienService.findByEmail("nntchinh2001@gmail.com"));
     }
 
-    @PostMapping("/changepass")
+    @PostMapping("/change-pass")
     public ResponseEntity<Map<String, Object>> changePassword(@RequestBody Map<String, String> body) {
         ThanhVienDTO thanhvienDTO = getFromToken();
         String oldPass = body.get("oldPass");

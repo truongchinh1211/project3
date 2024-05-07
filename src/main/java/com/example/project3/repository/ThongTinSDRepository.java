@@ -10,9 +10,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface ThongTinSDRepository extends JpaRepository<ThongTinSd,Long> {
-    @Query(value = "SELECT * FROM thongtinsd WHERE MaTB = ?1 AND DATE(TGDatCho) = ?2 ", nativeQuery = true)
-    Optional<List<ThongTinSd>> findReservations(long MaTB,LocalDate TGDatCho);
+public interface ThongTinSDRepository extends JpaRepository<ThongTinSd, Long> {
 
+    @Query(value = "SELECT * FROM thongtinsd WHERE MaTB = ?1 AND DATE(TGDatCho) = ?2 ", nativeQuery = true)
+    Optional<List<ThongTinSd>> findReservations(long MaTB, LocalDate TGDatCho);
+
+    @Query(value = "SELECT * FROM thongtinsd WHERE MaTV = ?1", nativeQuery = true)
+    List<ThongTinSd> getByMaTV(long MaTV);
 
 }

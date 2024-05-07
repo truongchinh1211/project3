@@ -38,9 +38,9 @@ public class SecurityConfig {
                 .csrf((AbstractHttpConfigurer::disable))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/api/v1/user/login").permitAll()
+                        .requestMatchers("/api/v1/user/login/").permitAll()
                         .requestMatchers("/api/v1/user/register").permitAll()
-                        .requestMatchers("/api/v1/user").permitAll()
+                        .requestMatchers("/api/v1/user/forget-password").permitAll()
                         .anyRequest().authenticated())
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),jwtService,thanhVienService))
                 .exceptionHandling((httpSecurityExceptionHandlingConfigurer ->

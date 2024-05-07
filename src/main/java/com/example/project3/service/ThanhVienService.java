@@ -4,7 +4,9 @@ import com.example.project3.dto.ThanhVienDTO;
 import com.example.project3.entity.ThanhVien;
 import com.example.project3.exception.ResourceNotFoundException;
 import com.example.project3.repository.ThanhVienRepository;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.Convert;
+import java.io.UnsupportedEncodingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,9 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class ThanhVienService {
+    @Autowired
+    MailService mailService;
+    @Value("${url.path}")
+    private String url;
 
     @Autowired
     ThanhVienRepository thanhVienRepository;
@@ -114,5 +121,20 @@ public class ThanhVienService {
         ThanhVien thanhVien = thanhVienOptional.get();
         thanhVien.setPassword(newPassword);
         return convertToDTO(thanhVienRepository.save(thanhVien));
+    }
+    
+    public boolean forgetPassword(String email) throws UnsupportedEncodingException, MessagingException {
+        Optional<ThanhVien> thanhVienOptional = thanhVienRepository.findByEmail(email);
+
+        String subject = "Quen mat khau";
+        String body = "Nhap vao link de doi mat khau: " + url +"/api/change-password";
+
+        if (thanhVienOptional.isPresent()) {
+            mailService.send(email, subject, body);
+
+            return true;
+        }
+        else throw new ResourceNotFoundException("Không tìm thấy email: " + email);
+
     }
 }

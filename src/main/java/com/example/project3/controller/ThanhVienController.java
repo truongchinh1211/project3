@@ -58,33 +58,20 @@ public class ThanhVienController {
     }
 
     @PostMapping("/changepass")
-    public ResponseEntity<Map<String, Object>> changePassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody Map<String, String> body) {
-        if (authorizationHeader == null) {
-            throw new ResourceNotFoundException("Thiếu header cho request!!!");
-        }
-        if (!authorizationHeader.startsWith("Bearer ")) {
-            throw new ResourceNotFoundException("Header không đúng định dạng!!!");
-        }
-        if (body == null) {
-            throw new ResourceNotFoundException("Thiếu body cho request!!!");
-        }
-        String token = authorizationHeader.substring(7);
-        if (!jwtService.isValidToken(token)) {
-            throw new ResourceNotFoundException("Token đã hết hạn!!!");
-        }
-        String email = jwtService.extractEmailFromToken(token);
+    public ResponseEntity<Map<String, Object>> changePassword(@RequestBody Map<String, String> body) {
+        ThanhVienDTO thanhvienDTO = getFromToken();
         String oldPass = body.get("oldPass");
         String newPass = body.get("newPass");
         String confirmNewPass = body.get("confirmNewPass");
         //Kiểm tra login, nếu đúng thực hiện tiếp code bên dưới
-        ThanhVienDTO thanhVienDTO = thanhVienService.login(email, oldPass);
+        thanhVienService.login(thanhvienDTO.getEmail(), oldPass);
         if (oldPass.equals(newPass)) {
             throw new ResourceNotFoundException("Mật khẩu mới trùng với mật khẩu cũ!!!");
         }
         if (!newPass.equals(confirmNewPass)) {
             throw new ResourceNotFoundException("Mật khẩu mới không khớp!!!");
         }
-        thanhVienService.changePassword(thanhVienDTO.getMaTV(), newPass);
+        thanhVienService.changePassword(thanhvienDTO.getMaTV(), newPass);
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Đổi mật khẩu thành công!!!");
         return ResponseEntity.ok(response);

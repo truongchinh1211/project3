@@ -12,6 +12,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -35,22 +37,17 @@ public class XuLyController {
 
     @Autowired
     ThanhVienService thanhVienService;
+    
+    public ThanhVienDTO getFromToken() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+        return thanhVienService.findByEmail(email);
+    }
 
-    @GetMapping("/getByMaTV")
-    public ResponseEntity<Map<String, Object>> getByMaTV(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        if (authorizationHeader == null) {
-            throw new ResourceNotFoundException("Thiếu header cho request!!!");
-        }
-        if (!authorizationHeader.startsWith("Bearer ")) {
-            throw new ResourceNotFoundException("Header không đúng định dạng!!!");
-        }
-        String token = authorizationHeader.substring(7);
-        if (!jwtService.isValidToken(token)) {
-            throw new ResourceNotFoundException("Token đã hết hạn!!!");
-        }
-        String email = jwtService.extractEmailFromToken(token);
-        ThanhVienDTO thanhVienDTO = thanhVienService.findByEmail(email);
-        long maTV = thanhVienDTO.getMaTV();
+    @GetMapping("/get-by-matv")
+    public ResponseEntity<Map<String, Object>> getByMaTV() {
+        ThanhVienDTO thanhvienDTO = getFromToken();
+        long maTV = thanhvienDTO.getMaTV();
         
         List<XuLyDTO> list = xuLyService.findByMaTV(maTV);
         Map<String, Object> response = new HashMap<>();

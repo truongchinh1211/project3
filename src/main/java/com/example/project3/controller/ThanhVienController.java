@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 
 
 @RestController
@@ -27,6 +28,7 @@ import org.springframework.http.HttpHeaders;
 public class ThanhVienController {
     @Autowired
     ThanhVienService thanhVienService;
+
 
     @Autowired
     JwtService jwtService;
@@ -49,6 +51,7 @@ public class ThanhVienController {
         return ResponseEntity.ok(response);
     }
 
+    
     @GetMapping("/info")
     public ResponseEntity<ThanhVienDTO> getInfo() {
         return ResponseEntity.ok(getFromToken());
@@ -85,4 +88,18 @@ public class ThanhVienController {
         return ResponseEntity.ok(thanhVienService.forgetPassword(email));
     }
 
+    @PostMapping("/reset-password/{email}")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String,String> passwordReset
+            , @PathVariable String email) {
+        String newPass = passwordReset.get("newPass");
+        String confirm = passwordReset.get("confirm");
+        
+        return ResponseEntity.ok(thanhVienService.resetPassword(newPass, confirm, email));
+    }
+    
+    @PostMapping("/register")
+    public ResponseEntity<?> createThanhVien(@RequestBody ThanhVienDTO dTO) {
+        
+        return new ResponseEntity<>(thanhVienService.create(dTO), HttpStatus.CREATED);
+    }
 }

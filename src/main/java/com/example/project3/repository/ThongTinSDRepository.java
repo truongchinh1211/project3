@@ -4,10 +4,8 @@ import com.example.project3.entity.ThietBi;
 import com.example.project3.entity.ThongTinSd;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -33,7 +31,7 @@ public interface ThongTinSDRepository extends JpaRepository<ThongTinSd, Long> {
     
     
     
-    @Query(value = "SELECT * FROM thongtinsd WHERE MaTV = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM thongtinsd WHERE MaTV = ?1 ORDER BY TGDatcho DESC", nativeQuery = true)
     List<ThongTinSd> getByMaTV(long MaTV);
     
     

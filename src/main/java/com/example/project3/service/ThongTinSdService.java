@@ -10,6 +10,7 @@ import com.example.project3.exception.ResourceNotFoundException;
 import com.example.project3.repository.ThanhVienRepository;
 import com.example.project3.repository.ThietBiRepository;
 import com.example.project3.repository.ThongTinSDRepository;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +46,8 @@ public class ThongTinSdService {
         thongTinSd.setTGDatCho(thongTinSdDTO.getTGDatCho());
         thongTinSd.setThanhVien(thanhVien);
         thongTinSd.setThietBi(thietBi);
-        if (thongTinSDRepository.findReservations(thietBi.getMaTB(), thongTinSd.getTGDatCho().toLocalDate()).isPresent()) {
-            throw new Exception("Thiết bị đã được đặt trước vào ngày này");
+        if (thongTinSDRepository.checkTGTraIsNull(thietBi.getMaTB()).isPresent()) {
+            throw new Exception("Thiết bị đã được đặt chỗ hoặc mượn!!");
         }
         scheduler.schedule(() -> check(thongTinSd), 1, TimeUnit.HOURS);
         return ThongTinSdDTO.convertToDTO(thongTinSDRepository.save(thongTinSd));
@@ -71,6 +72,16 @@ public class ThongTinSdService {
         }
         return ttSuDungDTOList;
     }
+    
+    public void deleteByMaTBAndTGTraIsNull(long MaTB) {
+        thongTinSDRepository.deleteByMaTBAndTGTraIsNull(MaTB);
+    }
+    
+    public void updateTraThietBi(long MaTB, LocalDate TGTra) {
+        thongTinSDRepository.updateTraThietBi(MaTB, TGTra);
+    }
+
+ 
 
     public ThongTinSdDTO convertToDTO(ThongTinSd ttsd) {
         ThongTinSdDTO ttsdDTO = new ThongTinSdDTO();

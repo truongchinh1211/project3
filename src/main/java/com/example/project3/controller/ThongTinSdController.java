@@ -3,6 +3,7 @@ package com.example.project3.controller;
 import com.example.project3.dto.ThanhVienDTO;
 import com.example.project3.dto.ThietBiDTO;
 import com.example.project3.dto.ThongTinSdDTO;
+import com.example.project3.entity.ThietBi;
 import com.example.project3.service.JwtService;
 import com.example.project3.service.ThanhVienService;
 import com.example.project3.service.ThongTinSdService;
@@ -39,9 +40,10 @@ public class ThongTinSdController {
     }
 
     @PostMapping("datcho")
-    public ResponseEntity<ThongTinSdDTO> muon(@RequestBody Map<String, Object> requestData) throws Exception {
+    public ResponseEntity<?> muon(@RequestBody Map<String, Object> requestData) throws Exception {
         long maTB = Long.parseLong(requestData.get("maTB").toString());
-        LocalDateTime TGDatCho = LocalDateTime.parse(requestData.get("TGDatCho").toString());
+  
+        LocalDateTime TGDatCho = LocalDateTime.now();
         ThietBiDTO thietBiDTO = new ThietBiDTO();
         thietBiDTO.setMaTB(maTB);
         ThanhVienDTO thanhVienDTO = new ThanhVienDTO();
@@ -49,7 +51,9 @@ public class ThongTinSdController {
         ThongTinSdDTO thongTinSdDTO = new ThongTinSdDTO();
         thongTinSdDTO.setThanhVien(thanhVienDTO);
         thongTinSdDTO.setThietBi(thietBiDTO);
+        thongTinSdDTO.setTGDatCho(TGDatCho);
         return ResponseEntity.ok(thongTinSdService.reserve(thongTinSdDTO));
+
     }
 
     @GetMapping("/get-by-matv")
@@ -62,4 +66,27 @@ public class ThongTinSdController {
         response.put("list", list);
         return ResponseEntity.ok(response);
     }
+    
+    
+    @PostMapping("huydatcho")
+    public ResponseEntity<?> huyDatCho(@RequestBody Map<String, Object> requestData) throws Exception {
+        long maTB = Long.parseLong(requestData.get("maTB").toString());
+        
+        thongTinSdService.deleteByMaTBAndTGTraIsNull(maTB);
+        
+        return ResponseEntity.ok("success");
+
+    }
+    
+    @PostMapping("trathietbi")
+    public ResponseEntity<?> traThietBi(@RequestBody Map<String, Object> requestData) throws Exception {
+        long maTB = Long.parseLong(requestData.get("maTB").toString());
+        LocalDateTime TGTra = LocalDateTime.now();
+        thongTinSdService.updateTraThietBi(maTB,TGTra.toLocalDate());
+        
+        return ResponseEntity.ok("success");
+
+    }
+    
+    
 }

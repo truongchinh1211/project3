@@ -12,7 +12,10 @@ import java.time.LocalDateTime;
 @Data
 public class ThongTinSd {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long MaTT;
+    
+    
     @ManyToOne
     @JoinColumn(name = "MaTV")
     private ThanhVien thanhVien;

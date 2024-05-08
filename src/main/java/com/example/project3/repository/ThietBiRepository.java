@@ -12,4 +12,11 @@ import java.util.Optional;
 public interface ThietBiRepository extends JpaRepository<ThietBi,Long> {
     @Query(value = "SELECT * FROM thietbi WHERE TenTB LIKE ?1", nativeQuery = true)
     List<ThietBi> getByKeyword(String keyword);
+    
+    
+    @Override
+    List<ThietBi> findAll();
+    
+    
+    
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 
 
 @RestController
@@ -94,5 +95,11 @@ public class ThanhVienController {
         String confirm = passwordReset.get("confirm");
         
         return ResponseEntity.ok(thanhVienService.resetPassword(newPass, confirm, email));
+    }
+    
+    @PostMapping("/register")
+    public ResponseEntity<?> createThanhVien(@RequestBody ThanhVienDTO dTO) {
+        
+        return new ResponseEntity<>(thanhVienService.create(dTO), HttpStatus.CREATED);
     }
 }

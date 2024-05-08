@@ -28,6 +28,7 @@ public class ThanhVienController {
     @Autowired
     ThanhVienService thanhVienService;
 
+
     @Autowired
     JwtService jwtService;
 
@@ -49,6 +50,7 @@ public class ThanhVienController {
         return ResponseEntity.ok(response);
     }
 
+    
     @GetMapping("/info")
     public ResponseEntity<ThanhVienDTO> getInfo() {
         return ResponseEntity.ok(getFromToken());
@@ -85,4 +87,12 @@ public class ThanhVienController {
         return ResponseEntity.ok(thanhVienService.forgetPassword(email));
     }
 
+    @PostMapping("/reset-password/{email}")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String,String> passwordReset
+            , @PathVariable String email) {
+        String newPass = passwordReset.get("newPass");
+        String confirm = passwordReset.get("confirm");
+        
+        return ResponseEntity.ok(thanhVienService.resetPassword(newPass, confirm, email));
+    }
 }

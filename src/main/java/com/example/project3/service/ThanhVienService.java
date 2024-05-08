@@ -127,7 +127,7 @@ public class ThanhVienService {
         Optional<ThanhVien> thanhVienOptional = thanhVienRepository.findByEmail(email);
 
         String subject = "Quen mat khau";
-        String body = "Nhap vao link de doi mat khau: " + url +"/api/change-password";
+        String body = "Nhap vao link de doi mat khau: " + url+"template/resetpassword.html?email=" + email;
 
         if (thanhVienOptional.isPresent()) {
             mailService.send(email, subject, body);
@@ -136,5 +136,20 @@ public class ThanhVienService {
         }
         else throw new ResourceNotFoundException("Không tìm thấy email: " + email);
 
+    }
+    
+    public boolean resetPassword(String newPass, String confirm, String email) {
+
+        
+        if (!newPass.equals(confirm)) {
+            throw new ResourceNotFoundException("Mật khẩu mới không khớp!!!");
+        }
+        
+       Optional<ThanhVien> thanhVienOptional = thanhVienRepository.findByEmail(email);
+       ThanhVien thanhVien = thanhVienOptional.get();
+       
+        changePassword(thanhVien.getMaTV(), newPass);
+        
+        return true;
     }
 }

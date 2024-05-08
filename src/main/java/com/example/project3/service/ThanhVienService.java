@@ -127,7 +127,7 @@ public class ThanhVienService {
         Optional<ThanhVien> thanhVienOptional = thanhVienRepository.findByEmail(email);
 
         String subject = "Quen mat khau";
-        String body = "Nhap vao link de doi mat khau: " + url+"/src/main/resources/Client/User/resetpassword.html?email=" + email;
+        String body = "Nhap vao link de doi mat khau: " + url+"src/main/resources/Client/User/resetpassword.html?email=" + email;
 
         if (thanhVienOptional.isPresent()) {
             mailService.send(email, subject, body);

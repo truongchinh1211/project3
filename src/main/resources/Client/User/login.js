@@ -25,6 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
     postData(apiUrl, dataToSend, function (response) {
       console.log("Object:", response);
       var token = response.token;
+      localStorage.setItem("token", token);
+      console.log("Token in local storage:", localStorage.getItem("token"));
       console.log("Catch token:", token);
     });
   });

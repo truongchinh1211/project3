@@ -1,21 +1,35 @@
 var token =
-  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTUxNDc5NDMsInN1YiI6ImFAZ21haWwuY29tIn0.wZa_-ZNcXawSbSaXwUnJQvi_Ey8H1J7eW0vg5VIompI";
+  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTUxNTcyNjYsInN1YiI6ImFAZ21haWwuY29tIn0.N2k9ED8TQuuOgi5V1cHPJcqFXQSL7tyt74Q758Csv1U";
+
+function liveToast(message, isSuccess) {
+  if (isSuccess) {
+    $("#liveToast").removeClass("bg-danger");
+    $("#liveToast").addClass("bg-success");
+  } else {
+    $("#liveToast").removeClass("bg-success");
+    $("#liveToast").addClass("bg-danger");
+  }
+
+  $(".toast-header .me-auto").text(isSuccess ? "Thành công" : "Thất bại");
+  $(".toast-body").text(message);
+  $("#liveToast").removeClass("hide").addClass("show");
+}
 
 function checkInput(oldPass, newPass, confirmNewPass) {
   if (oldPass == "") {
-    alert("Chưa nhập mật khẩu hiện tại!");
+    liveToast("Chưa nhập mật khẩu hiện tại!", false);
     return false;
   }
   if (newPass == "") {
-    alert("Chưa nhập mật khẩu mới!");
+    liveToast("Chưa nhập mật khẩu mới!", false);
     return false;
   }
   if (confirmNewPass == "") {
-    alert("Chưa nhập lại mật khẩu mới!");
+    liveToast("Chưa nhập lại mật khẩu mới!", false);
     return false;
   }
   if (confirmNewPass != newPass) {
-    alert("Mật khẩu mới không khớp!");
+    liveToast("Mật khẩu mới không khớp!", false);
     return false;
   }
   if (
@@ -23,7 +37,7 @@ function checkInput(oldPass, newPass, confirmNewPass) {
     newPass.includes(" ") ||
     confirmNewPass.includes(" ")
   ) {
-    alert("Mật khẩu không được chứa khoảng trắng!");
+    liveToast("Mật khẩu không được chứa khoảng trắng!", false);
     return false;
   }
   return true;
@@ -51,12 +65,13 @@ $("#form-change-password").submit(function (e) {
         Authorization: token,
       },
       success: function (data) {
-        alert(data.message);
+        liveToast(data.message, true);
         console.log(data);
       },
       error: function (data) {
-        alert(data.responseText);
-        console.log(data.responseText);
+        console.log(data);
+        let jsonObject = JSON.parse(data.responseText);
+        liveToast(jsonObject.error, false);
       },
     });
   }
@@ -109,10 +124,9 @@ function handleDataDatCho(data) {
     let maTB = thietBi.maTB;
     let tenTB = thietBi.tenTB;
 
-    let tgvao = item.tgvao ? item.tgvao.replace("T"," ") : "";
-    let tgmuon = item.tgmuon ? item.tgmuon.replace("T"," ") : "";
-    let tgtra = item.tgtra ? item.tgtra.replace("T"," ") : "";
-    let tgdatCho = item.tgdatCho.replace("T"," ");
+    let tgmuon = item.tgmuon ? item.tgmuon.replace("T", " ") : "";
+    let tgtra = item.tgtra ? item.tgtra.replace("T", " ") : "";
+    let tgdatCho = item.tgdatCho.replace("T", " ");
 
     let trangThai = "";
 
@@ -128,10 +142,9 @@ function handleDataDatCho(data) {
                   <td>${item.maTT}</td>
                   <td>${maTB}</td>
                   <td>${tenTB}</td>
-                  <td>${tgvao}</td>
+                  <td>${tgdatCho}</td>
                   <td>${tgmuon}</td>
                   <td>${tgtra}</td>
-                  <td>${tgdatCho}</td>
                   ${trangThai}
                 </tr>`;
   });

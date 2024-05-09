@@ -70,8 +70,12 @@ $("#form-change-password").submit(function (e) {
       },
       error: function (data) {
         console.log(data);
-        let jsonObject = JSON.parse(data.responseText);
-        liveToast(jsonObject.error, false);
+        if (data.responseText == undefined) {
+          liveToast("Có lỗi xảy ra!!!", false);
+        } else {
+          let jsonObject = JSON.parse(data.responseText);
+          liveToast(jsonObject.error, false);
+        }
       },
     });
   }

@@ -13,7 +13,6 @@
             padding: 0;
         }
 
-        /* Container styles */
         .container {
             max-width: 400px;
             margin: 50px auto;
@@ -23,19 +22,21 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Heading styles */
         h2 {
             text-align: center;
             margin-bottom: 20px;
         }
 
-        /* Label styles */
+        a {
+            font-size: 14px;
+        }
+
         label {
             display: block;
             margin-bottom: 5px;
+            font-size: 14px;
         }
 
-        /* Input styles */
         input[type="text"],
         input[type="tel"],
         input[type="email"],
@@ -49,15 +50,14 @@
             box-sizing: border-box;
         }
 
-        /* Submit button styles */
         input[type="submit"] {
-            background-color: #4caf50;
+            background-color: #0866ff;
             color: white;
             cursor: pointer;
         }
 
         input[type="submit"]:hover {
-            background-color: #45a049;
+            background-color: #0867ff47;
         }
     </style>
 </head>
@@ -85,6 +85,7 @@
             <input type="password" id="password" name="password" required>
 
             <input type="submit" value="Register">
+            <a href="login.html">Already have an account?</a>
         </form>
     </div>
     <script src="../js/resign.js"></script>

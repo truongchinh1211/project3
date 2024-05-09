@@ -46,7 +46,7 @@ public class ThietBiController {
     
     @GetMapping("/list-by-current-user")
     public ResponseEntity<Map<String, Object>> listByCurrentUser() {
-        List<ResponseThietBiDTO> listResTbDto = thietBiService.listByCurrentUser(getDTOFromToken());
+    	List<ResponseThietBiDTO> listResTbDto = thietBiService.listByCurrentUser(getDTOFromToken());
         
         Map<String, Object> response = new HashMap<>();
         response.put("listTb", listResTbDto);

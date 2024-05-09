@@ -46,8 +46,8 @@ public class ThongTinSdService {
         thongTinSd.setTGDatCho(thongTinSdDTO.getTGDatCho());
         thongTinSd.setThanhVien(thanhVien);
         thongTinSd.setThietBi(thietBi);
-        if (thongTinSDRepository.checkTGTraIsNull(thietBi.getMaTB()).isPresent()) {
-            throw new Exception("Thiết bị đã được đặt chỗ hoặc mượn!!");
+        if (thongTinSDRepository.findReservations(thietBi.getMaTB(),thongTinSd.getTGDatCho().toLocalDate()).isPresent()) {
+            throw new Exception("Thiết bị đã được đặt chỗ vào ngày đó!!");
         }
         scheduler.schedule(() -> check(thongTinSd), 1, TimeUnit.HOURS);
         return ThongTinSdDTO.convertToDTO(thongTinSDRepository.save(thongTinSd));

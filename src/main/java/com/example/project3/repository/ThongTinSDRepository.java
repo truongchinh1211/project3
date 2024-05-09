@@ -13,11 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface ThongTinSDRepository extends JpaRepository<ThongTinSd, Long> {
 
-    @Query(value = "SELECT * FROM thongtinsd WHERE MaTB = ?1 AND DATE(TGDatCho) = ?2 ", nativeQuery = true)
+    @Query(value = "SELECT * FROM thongtinsd WHERE MaTB = ?1 AND DATE(TGDatCho) = ?2 AND TGTra IS NULL", nativeQuery = true)
     Optional<List<ThongTinSd>> findReservations(long MaTB, LocalDate TGDatCho);
 
-    @Query(value = "SELECT * FROM thongtinsd WHERE MaTB = ?1 AND TGTra IS NULL " , nativeQuery = true)
-    Optional<ThongTinSd> checkTGTraIsNull(long MaTB);
     
     @Transactional
     @Modifying

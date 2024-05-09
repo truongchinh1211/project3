@@ -88,7 +88,9 @@ function loadListThietBi() {
 
 }
 
+
 function loadBtn() {
+
     $(".datChoBtn").click(function () {
         $(this).attr("data-original-text", $(this).html());
         $(this).prop("disabled", true);
@@ -195,6 +197,7 @@ function loadBtn() {
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log("Request failed:", textStatus, errorThrown);
+                    
                 }
             });
         }, 1000)

@@ -40,10 +40,10 @@ public class ThongTinSdController {
     }
 
     @PostMapping("datcho")
-    public ResponseEntity<?> muon(@RequestBody Map<String, Object> requestData) throws Exception {
+    public ResponseEntity<?> datcho(@RequestBody Map<String, Object> requestData) throws Exception {
         long maTB = Long.parseLong(requestData.get("maTB").toString());
-  
-        LocalDateTime TGDatCho = LocalDateTime.now();
+        LocalDateTime TGDatCho = LocalDateTime.parse(requestData.get("TGDatcho").toString());
+        
         ThietBiDTO thietBiDTO = new ThietBiDTO();
         thietBiDTO.setMaTB(maTB);
         ThanhVienDTO thanhVienDTO = new ThanhVienDTO();

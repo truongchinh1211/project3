@@ -38,19 +38,12 @@ public class ThietBiController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ThietBiDTO>> getAllByKeyword(@RequestParam(required = false) String keyword){
+    public ResponseEntity<List<ThietBiDTO>> getAllByKeyword(@RequestParam(value="keyword",required = false) String keyword){
         if (keyword == null || keyword.isEmpty())
             return ResponseEntity.ok(thietBiService.getAll());
         return ResponseEntity.ok(thietBiService.getAllByKeyword(keyword));
     }
     
-    @GetMapping("/list-by-current-user")
-    public ResponseEntity<Map<String, Object>> listByCurrentUser() {
-    	List<ResponseThietBiDTO> listResTbDto = thietBiService.listByCurrentUser(getDTOFromToken());
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("listTb", listResTbDto);
-        return ResponseEntity.ok(response);
-    }
+
 
 }

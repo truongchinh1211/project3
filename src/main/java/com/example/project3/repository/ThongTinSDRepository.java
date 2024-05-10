@@ -14,41 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ThongTinSDRepository extends JpaRepository<ThongTinSd, Long> {
 
     @Query(value = "SELECT * FROM thongtinsd WHERE MaTB = ?1 AND DATE(TGDatCho) = ?2 AND TGTra IS NULL", nativeQuery = true)
-    Optional<List<ThongTinSd>> findReservations(long MaTB, LocalDate TGDatCho);
+    Optional<ThongTinSd> findReservations(long MaTB, LocalDate TGDatcho);
 
-    
-    @Transactional
-    @Modifying
-    @Query(value = "delete from thongtinsd where MaTB = ?1 AND TGTra Is NULL", nativeQuery = true)
-    void deleteByMaTBAndTGTraIsNull(long MaTB);
-    
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE thongtinsd SET TGDatcho = null, TGMuon = null, TGTra = ?2 WHERE MaTB = ?1", nativeQuery = true)
-    void updateTraThietBi(long MaTB, LocalDate TGTra);
-    
+    @Query(value = "SELECT * from thongtinsd where MaTB = ?1 AND MaTV = ?2 AND DATE(TGDatcho) = ?3 AND TGTra IS NULL", nativeQuery = true)
+    Optional<ThongTinSd> findReservation(long MaTB, long maTV, LocalDate TGDatcho);
     
     
     @Query(value = "SELECT * FROM thongtinsd WHERE MaTV = ?1 ORDER BY TGDatcho DESC", nativeQuery = true)
     List<ThongTinSd> getByMaTV(long MaTV);
     
-    
-    @Query(value = "SELECT COUNT(*) FROM thongtinsd WHERE MaTB = ?1 AND MaTV = ?2 AND TGTra IS NULL",
-            nativeQuery = true)
-    long countByMaTBAndMaTVAndTGTraIsNull(long maTB, long maTV);
-    
-    @Query(value ="""
-                  select count(*)
-                  from thongtinsd
-                  where thongtinsd.MaTB = ?1 
-                  \tand thongtinsd.TGMuon is not null""", nativeQuery = true)
-    long countByMaTBAndTGMuonIsNotNull(long maTB);
-    
-    @Query(value ="""
-                  select count(*)
-                  from thongtinsd
-                  where thongtinsd.MaTB = ?1 
-                  \tand thongtinsd.TGDatcho is not null""", nativeQuery = true)
-    long countByMaTBAndTGDatchoIsNotNull(long maTB);
+
 
 }

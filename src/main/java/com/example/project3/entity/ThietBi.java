@@ -14,7 +14,7 @@ public class ThietBi {
     @Id
     private long MaTB;
     @Column (name = "TenTB")
-    private String TenTB;
+    private String tenTB;
     @Column (name = "MoTaTB")
     private String MoTaTB;
     @OneToMany(mappedBy = "thietBi", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -32,7 +32,7 @@ public class ThietBi {
     public ThietBiDTO convertToDTO(){
         ThietBiDTO thietBiDTO = new ThietBiDTO();
         thietBiDTO.setMaTB(MaTB);
-        thietBiDTO.setTenTB(TenTB);
+        thietBiDTO.setTenTB(tenTB);
         thietBiDTO.setMoTaTB(MoTaTB);
         return thietBiDTO;
     }

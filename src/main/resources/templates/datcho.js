@@ -1,78 +1,37 @@
 var listTb;
 const myHeaders = new Headers();
-// var headerAuthorization = myHeaders.get("Authorization") ?? "Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTUxOTg4ODUsInN1YiI6ImFAZ21haWwuY29tIn0.Y108RtqQaSw2naFwcnXyhxnoKx7w3lpO6hQj-WlLT-I";
-var headerAuthorization =  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTUyMDAxNjMsInN1YiI6ImFAZ21haWwuY29tIn0.Wm4-0PO01P11Q3CeaMBtQ1Qoo8jjCQ_QImknajeXlH0";
+var headerAuthorization = myHeaders.get("Authorization") ?? "Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTUzMjk5NTMsInN1YiI6ImFAZ21haWwuY29tIn0.2_wAav2uisQZ0zODNa3r7t9TFaLx7reBlQ873ztflgI";
+// var headerAuthorization = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTUzMTQxNDAsInN1YiI6ImFAZ21haWwuY29tIn0.QcxaNPCiJxIck-Mi6RzixjhCnbq41wsiAzu3FWWi0Gk";
 
 function loadListThietBi() {
     return new Promise(function (myResolve, myReject) {
         $.ajax({
-            url: "http://localhost:8080/api/v1/thietbi/list-by-current-user",
+            url: "http://localhost:8080/api/v1/thietbi",
             type: "get",
 
             headers: {
                 "Authorization": headerAuthorization
             },
             success: function (result) {
-                listTb = result.listTb;
+                listTb = result;
 
                 var html = ``;
                 listTb.forEach(function (tb, index) {
-                    let injecthtml = ``;
-                    let subhtml = ``;
-                    if (tb.isMuon == true) {
-                        if (tb.isCurrentThanhVien == true) {
-                            injecthtml = `<td class="text-primary">Bạn Đang Mượn</td>
-                            <td >
-                              <div class="btn-group btn-group-justified">
-                                <button  type="button" class="btn btn-primary traThietBiBtn" value=${index}>Trả Thiết Bị</button >
-                              </div>
-                            </td>`
-                        }
-                        else {
-                            injecthtml = `<td class="text-primary">Đã Được Mượn</td>
-                            <td >
-                              <div class="btn-group btn-group-justified">
-                                <button  type="button" class="btn invisible">Đặt Chỗ</button >
-                              </div>
-                            </td>`
-                        }
-                    }
-                    else {
-                        if (tb.isDatCho == true) {
-                            if (tb.isCurrentThanhVien == true) {
-                                injecthtml = `<td class="text-danger">Bạn Đang Đặt Chỗ</td>
-                                <td >
-                                  <div class="btn-group btn-group-justified">
-                                    <button  type="button" class="btn btn-danger huyDatChoBtn " value=${index}>Hủy đặt chỗ</button >
-                                  </div>
-                                </td>`
-                            }
-                            else {
-                                injecthtml = `<td class="text-danger ">Đã Được Đặt Chỗ</td>
-                                <td >
-                                  <div class="btn-group btn-group-justified">
-                                    <button  type="button" class="btn  invisible">Đặt Chỗ</button >
-                                  </div>
-                                </td>`
-                            }
-                        }
-                        else {
-                            injecthtml = `<td class="text-success">Rảnh</td>
-                                <td >
-                                  <div class="btn-group btn-group-justified">
-                                    <button  type="button" class="btn btn-success datChoBtn" value=${index}>Đặt Chỗ</button >
-                                  </div>
-                                </td>`
-                        }
-                    }
-
-                    subhtml = `<tr>
-                    <th scope="row">${tb.maTB}</th>
+                    let injecthtml = `<tr>
+                    <th scope="row">${index}</th>
+                    <th >${tb.maTB}</th>
                     <td>${tb.tenTB}</td>
                     <td>${tb.moTaTB}</td>
-                    ${injecthtml}
-                  </tr>`
-                    html += subhtml;
+                    <td>
+                      <div class="btn-group btn-group-justified">
+                        <button type="button" class="btn btn-primary" index=${index} 
+                        data-bs-toggle="modal" data-bs-target="#datchoModal">Đặt chỗ</button>
+                      </div>
+                    </td>
+                  </tr>`;
+
+
+                    html += injecthtml
 
                 })
                 $(".table-body").html(html);
@@ -91,15 +50,40 @@ function loadListThietBi() {
 
 function loadBtn() {
 
-    $(".datChoBtn").click(function () {
-        $(this).attr("data-original-text", $(this).html());
-        $(this).prop("disabled", true);
-        $(this).html('<i class="spinner-border spinner-border-sm"></i> Loading...');
+    $('#datchoModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var listIndex = button.attr('index') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-body #maTBInput').val(listTb[listIndex].maTB)
+        modal.find('.modal-body #tenTBInput').val(listTb[listIndex].tenTB)
+        modal.find('.modal-body #moTaTBInput').val(listTb[listIndex].moTaTB)
+        modal.find('.modal-footer .datchoBtn').attr("index", button.attr("index"))
+        $("#message-modal").addClass("invisible")
+        modal.find('.modal-body #tgDatchoInput').val("")
 
 
-        let index = $(this).attr("value")
+    })
+
+    $(".datchoBtn").click(function () {
+        // if ($(".tgDatchoInput").val() == null) {
+        //     $("#message-modal").removeClass()
+        //     $("#message-modal").addClass("text-danger")
+        //     $("#message-modal").text("Thời gian đặt chỗ không được bỏ trống!!")
+        //     return;
+        // }
+
+        var button = $(this);
+        
+        button.prop("disabled", true);
+        button.html('<i class="spinner-border spinner-border-sm"></i> Đang Đặt Chỗ...');
+ 
+
+        let index = $(this).attr("index")
         let formData = {
             maTB: listTb[index].maTB,
+            TGDatcho: $("#tgDatchoInput").val()
 
         };
 
@@ -114,12 +98,21 @@ function loadBtn() {
                     "Authorization": headerAuthorization
                 },
                 success: function (data) {
-                    console.log(data);
-                    loadListThietBi().then(function() {
-                        loadBtn();
-                    });
+                    $("#message-modal").removeClass()   
+                    $("#message-modal").addClass("text-success")
+                    $("#message-modal").text("Đặt chỗ thành công!!")
+                    button.prop("disabled", false);
+                    button.html('Đặt Chỗ');
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    $("#message-modal").removeClass()
+                    $("#message-modal").addClass("text-danger")
+                    var resText = JSON.parse(jqXHR.responseText)
+                    $("#message-modal").text(resText.error)
+                    button.prop("disabled", false);
+                    button.html('Đặt Chỗ');
+
+
                     console.log("Request failed:", textStatus, errorThrown);
                 }
             });
@@ -128,85 +121,53 @@ function loadBtn() {
 
 
 
-    // huy dat cho
+    $(".searchBtn").click (function () {
+        var keyword = $(".searchText").val()
+        $.ajax({
+            url: `http://localhost:8080/api/v1/thietbi?keyword=${keyword}`,
+            type: "get",
+
+            headers: {
+                "Authorization": headerAuthorization
+            },
+            success: function (result) {
+                listTb = result;
+
+                var html = ``;
+                listTb.forEach(function (tb, index) {
+                    let injecthtml = `<tr>
+                    <th scope="row">${index}</th>
+                    <th >${tb.maTB}</th>
+                    <td>${tb.tenTB}</td>
+                    <td>${tb.moTaTB}</td>
+                    <td>
+                      <div class="btn-group btn-group-justified">
+                        <button type="button" class="btn btn-primary" index=${index} 
+                        data-bs-toggle="modal" data-bs-target="#datchoModal">Đặt chỗ</button>
+                      </div>
+                    </td>
+                  </tr>`;
 
 
-    $(".huyDatChoBtn").click (function () { 
-        $(this).attr("data-original-text", $(this).html());
-        $(this).prop("disabled", true);
-        $(this).html('<i class="spinner-border spinner-border-sm"></i> Loading...');
+                    html += injecthtml
 
+                })
+                $(".table-body").html(html);
 
-        let index = $(this).attr("value")
-        let formData = {
-            maTB: listTb[index].maTB,
+          
 
-        };
-
-        setTimeout(function () {
-
-            $.ajax({
-                url: "http://localhost:8080/api/v1/thongtinsd/huydatcho",
-                type: "post",
-                contentType: "application/json",
-                data: JSON.stringify(formData), // Chuyển đổi object thành chuỗi JSON
-                headers: {
-                    "Authorization": headerAuthorization
-                },
-                success: function (data) {
-                    console.log(data);
-                    loadListThietBi().then(function() {
-                        loadBtn();
-                    });
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log("Request failed:", textStatus, errorThrown);
-                }
-            });
-        }, 1000)
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Request failed:", textStatus, errorThrown);
+            }
+        });
     })
 
-
-    $(".traThietBiBtn").click (function () { 
-        $(this).attr("data-original-text", $(this).html());
-        $(this).prop("disabled", true);
-        $(this).html('<i class="spinner-border spinner-border-sm"></i> Loading...');
-
-
-        let index = $(this).attr("value")
-        let formData = {
-            maTB: listTb[index].maTB,
-
-        };
-
-        setTimeout(function () {
-
-            $.ajax({
-                url: "http://localhost:8080/api/v1/thongtinsd/trathietbi",
-                type: "post",
-                contentType: "application/json",
-                data: JSON.stringify(formData), // Chuyển đổi object thành chuỗi JSON
-                headers: {
-                    "Authorization": headerAuthorization
-                },
-                success: function (data) {
-                    console.log(data);
-                    loadListThietBi().then(function() {
-                        loadBtn();
-                    });
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log("Request failed:", textStatus, errorThrown);
-                    
-                }
-            });
-        }, 1000)
-    })
 }
 
 $(document).ready(function () {
 
-    loadListThietBi().then(function() {
+    loadListThietBi().then(function () {
         loadBtn();
     });
 

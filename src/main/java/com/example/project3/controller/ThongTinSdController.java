@@ -8,6 +8,7 @@ import com.example.project3.service.JwtService;
 import com.example.project3.service.ThanhVienService;
 import com.example.project3.service.ThongTinSdService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,7 +43,18 @@ public class ThongTinSdController {
     @PostMapping("datcho")
     public ResponseEntity<?> datcho(@RequestBody Map<String, Object> requestData) throws Exception {
         long maTB = Long.parseLong(requestData.get("maTB").toString());
+        if (requestData.get("TGDatcho") == null || requestData.get("TGDatcho").toString().isEmpty()  ) {
+        	String textRes = "Thời gian đặt chỗ không được bỏ trống!!";
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \""+textRes+"\"}");
+		}
         LocalDateTime TGDatCho = LocalDateTime.parse(requestData.get("TGDatcho").toString());
+        
+        
+        
+        if (TGDatCho.isBefore(LocalDateTime.now())) {
+        	String textRes = "Thời gian đặt chỗ phải sau thời điểm hiện tại!!";
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \""+textRes+"\"}");
+		}
         
         ThietBiDTO thietBiDTO = new ThietBiDTO();
         thietBiDTO.setMaTB(maTB);
@@ -53,6 +65,22 @@ public class ThongTinSdController {
         thongTinSdDTO.setThietBi(thietBiDTO);
         thongTinSdDTO.setTGDatCho(TGDatCho);
         return ResponseEntity.ok(thongTinSdService.reserve(thongTinSdDTO));
+    }
+    
+    
+    
+    @PostMapping("huydatcho")
+    public ResponseEntity<?> huyDatcho(@RequestBody Map<String, Object> requestData) throws Exception {
+        long maTB = Long.parseLong(requestData.get("maTB").toString());
+        LocalDateTime TGDatCho = LocalDateTime.parse(requestData.get("TGDatcho").toString());
+        ThanhVienDTO tvDto = getDTOFromToken();
+       
+        thongTinSdService.deleteReserve(maTB,tvDto,TGDatCho.toLocalDate());
+        
+        Map<String, Object> respone = new HashMap<>();
+        respone.put("success", "Xóa thành công!!");
+        
+        return ResponseEntity.ok(respone);
 
     }
 
@@ -67,26 +95,6 @@ public class ThongTinSdController {
         return ResponseEntity.ok(response);
     }
     
-    
-    @PostMapping("huydatcho")
-    public ResponseEntity<?> huyDatCho(@RequestBody Map<String, Object> requestData) throws Exception {
-        long maTB = Long.parseLong(requestData.get("maTB").toString());
-        
-        thongTinSdService.deleteByMaTBAndTGTraIsNull(maTB);
-        
-        return ResponseEntity.ok("success");
-
-    }
-    
-    @PostMapping("trathietbi")
-    public ResponseEntity<?> traThietBi(@RequestBody Map<String, Object> requestData) throws Exception {
-        long maTB = Long.parseLong(requestData.get("maTB").toString());
-        LocalDateTime TGTra = LocalDateTime.now();
-        thongTinSdService.updateTraThietBi(maTB,TGTra.toLocalDate());
-        
-        return ResponseEntity.ok("success");
-
-    }
     
     
 }

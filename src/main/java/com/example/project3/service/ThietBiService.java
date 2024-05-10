@@ -36,56 +36,17 @@ public class ThietBiService {
     public List<ThietBiDTO> getAllByKeyword(String keyword) {
         List<ThietBi> list = thietBiRepository.getByKeyword(keyword);
         return list.stream()
-                .filter(Objects::nonNull)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<ResponseThietBiDTO> listByCurrentUser(ThanhVienDTO tv) {
-        List<ThietBi> thietBis = thietBiRepository.findAll();
-        List<ResponseThietBiDTO> responseThietBiDTOs = new ArrayList<>();
 
-        for (ThietBi tb : thietBis) {
-            responseThietBiDTOs.add(convertToResponseThietBiDTO(tb, tv.getMaTV()));
-        }
-        
-        responseThietBiDTOs.sort(Comparator.comparing((ResponseThietBiDTO dto) -> dto.getIsDatCho() || dto.getIsMuon())
-                );
-                
 
-        return responseThietBiDTOs;
-    }
 
-    public ResponseThietBiDTO convertToResponseThietBiDTO(ThietBi thietBi, long maTV) {
-        ResponseThietBiDTO responseThietBiDTO = new ResponseThietBiDTO();
-        responseThietBiDTO.setMaTB(thietBi.getMaTB());
-        responseThietBiDTO.setTenTB(thietBi.getTenTB());
-        responseThietBiDTO.setMoTaTB(thietBi.getMoTaTB());
 
-        responseThietBiDTO.setIsCurrentThanhVien(
-                checkIsCurrentThanhVien(thietBi.getMaTB(), maTV));
-        
-        responseThietBiDTO.setIsDatCho(checkIsDatCho(thietBi.getMaTB()));
 
-        responseThietBiDTO.setIsMuon(checkIsMuon(thietBi.getMaTB()));
 
-        return responseThietBiDTO;
-    }
 
-    public Boolean checkIsCurrentThanhVien(long maTB, long maTV) {
-        long count = thongTinSDRepository.countByMaTBAndMaTVAndTGTraIsNull(maTB, maTV);
-        return count > 0;
-    }
-
-    public Boolean checkIsMuon(long maTB) {
-        long count = thongTinSDRepository.countByMaTBAndTGMuonIsNotNull(maTB);
-        return count > 0;
-    }
-
-    public Boolean checkIsDatCho(long maTB) {
-        long count = thongTinSDRepository.countByMaTBAndTGDatchoIsNotNull(maTB);
-        return count > 0;
-    }
 
     public ThietBiDTO convertToDTO(ThietBi thietBi) {
         return ThietBiDTO.convertToDTO(thietBi);

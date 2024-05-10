@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -47,20 +48,31 @@ public class ThongTinSdService {
         thongTinSd.setThanhVien(thanhVien);
         thongTinSd.setThietBi(thietBi);
         if (thongTinSDRepository.findReservations(thietBi.getMaTB(),thongTinSd.getTGDatCho().toLocalDate()).isPresent()) {
-            throw new Exception("Thiết bị đã được đặt chỗ vào ngày đó!!");
+            throw new ResourceNotFoundException("Thiết bị đã được đặt chỗ vào ngày này!!");
         }
         scheduler.schedule(() -> check(thongTinSd), 1, TimeUnit.HOURS);
         return ThongTinSdDTO.convertToDTO(thongTinSDRepository.save(thongTinSd));
 
     }
+    
+    @Transactional
+    public void deleteReserve(long maTB, ThanhVienDTO tvDto, LocalDate TGDatcho) throws Exception {
+        
+        Optional<ThongTinSd> ttSd = thongTinSDRepository.findReservation(maTB, tvDto.getMaTV(), TGDatcho);
+      
+        if (ttSd.isPresent()) {
+			thongTinSDRepository.deleteById(ttSd.get().getMaTT());
+		}
+        else {
+        	throw new ResourceNotFoundException("Không tìm thấy sự đặt chỗ thiết bị!");
+        }
+    }
 
     @Transactional
     public void check(ThongTinSd thongTinSd) {
         ThongTinSd existingThongTinSd = thongTinSDRepository.findById(thongTinSd.getMaTT()).orElse(null);
-        if (existingThongTinSd != null) {
-            if (existingThongTinSd.getTGMuon() == null) {
+        if (existingThongTinSd != null && existingThongTinSd.getTGMuon() == null) {
                 thongTinSDRepository.delete(existingThongTinSd);
-            }
         }
     }
 
@@ -72,15 +84,6 @@ public class ThongTinSdService {
         }
         return ttSuDungDTOList;
     }
-    
-    public void deleteByMaTBAndTGTraIsNull(long MaTB) {
-        thongTinSDRepository.deleteByMaTBAndTGTraIsNull(MaTB);
-    }
-    
-    public void updateTraThietBi(long MaTB, LocalDate TGTra) {
-        thongTinSDRepository.updateTraThietBi(MaTB, TGTra);
-    }
-
  
 
     public ThongTinSdDTO convertToDTO(ThongTinSd ttsd) {

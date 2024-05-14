@@ -1,6 +1,6 @@
 var listTb;
-const myHeaders = new Headers();
-var headerAuthorization = myHeaders.get("Authorization") ?? "Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTUzMjk5NTMsInN1YiI6ImFAZ21haWwuY29tIn0.2_wAav2uisQZ0zODNa3r7t9TFaLx7reBlQ873ztflgI";
+
+var headerAuthorization = Cookies.get("Authorization") ?? "Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTUzMjk5NTMsInN1YiI6ImFAZ21haWwuY29tIn0.2_wAav2uisQZ0zODNa3r7t9TFaLx7reBlQ873ztflgI";
 // var headerAuthorization = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTUzMTQxNDAsInN1YiI6ImFAZ21haWwuY29tIn0.QcxaNPCiJxIck-Mi6RzixjhCnbq41wsiAzu3FWWi0Gk";
 
 function loadListThietBi() {

@@ -4,6 +4,8 @@ import com.example.project3.dto.ThanhVienDTO;
 import com.example.project3.entity.ThanhVien;
 import com.example.project3.exception.ResourceNotFoundException;
 import com.example.project3.repository.ThanhVienRepository;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.jwk.JWK;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.Convert;
 import java.io.UnsupportedEncodingException;
@@ -23,7 +25,8 @@ public class ThanhVienService {
     MailService mailService;
     @Value("${url.path}")
     private String url;
-
+    @Autowired
+    private JwtService JwtService;
     @Autowired
     ThanhVienRepository thanhVienRepository;
 
@@ -123,11 +126,14 @@ public class ThanhVienService {
         return convertToDTO(thanhVienRepository.save(thanhVien));
     }
     
-    public boolean forgetPassword(String email) throws UnsupportedEncodingException, MessagingException {
+    public boolean forgetPassword(String email) throws UnsupportedEncodingException, MessagingException, JOSEException {
         Optional<ThanhVien> thanhVienOptional = thanhVienRepository.findByEmail(email);
-
+        //thêm
+        
+        String token = JwtService.generateTokenCustomize(email);
+        //
         String subject = "Quen mat khau";
-        String body = "Nhap vao link de doi mat khau: " + url+"src/main/resources/Client/User/resetpassword.html?email=" + email;
+        String body = "Nhap vao link de doi mat khau: " + url+"src/main/resources/Client/User/resetpassword.html?token=" + token;
 
         if (thanhVienOptional.isPresent()) {
             mailService.send(email, subject, body);

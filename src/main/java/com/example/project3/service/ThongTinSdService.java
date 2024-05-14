@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,24 +48,23 @@ public class ThongTinSdService {
         thongTinSd.setTGDatCho(thongTinSdDTO.getTGDatCho());
         thongTinSd.setThanhVien(thanhVien);
         thongTinSd.setThietBi(thietBi);
-        if (thongTinSDRepository.findReservations(thietBi.getMaTB(),thongTinSd.getTGDatCho().toLocalDate()).isPresent()) {
+        if (thongTinSDRepository.findReservations(thietBi.getMaTB(), thongTinSd.getTGDatCho().toLocalDate()).isPresent()) {
             throw new ResourceNotFoundException("Thiết bị đã được đặt chỗ vào ngày này!!");
         }
         scheduler.schedule(() -> check(thongTinSd), 1, TimeUnit.HOURS);
         return ThongTinSdDTO.convertToDTO(thongTinSDRepository.save(thongTinSd));
 
     }
-    
+
     @Transactional
     public void deleteReserve(long maTB, ThanhVienDTO tvDto, LocalDate TGDatcho) throws Exception {
-        
+
         Optional<ThongTinSd> ttSd = thongTinSDRepository.findReservation(maTB, tvDto.getMaTV(), TGDatcho);
-      
+
         if (ttSd.isPresent()) {
-			thongTinSDRepository.deleteById(ttSd.get().getMaTT());
-		}
-        else {
-        	throw new ResourceNotFoundException("Không tìm thấy sự đặt chỗ thiết bị!");
+            thongTinSDRepository.deleteById(ttSd.get().getMaTT());
+        } else {
+            throw new ResourceNotFoundException("Không tìm thấy sự đặt chỗ thiết bị!");
         }
     }
 
@@ -72,7 +72,7 @@ public class ThongTinSdService {
     public void check(ThongTinSd thongTinSd) {
         ThongTinSd existingThongTinSd = thongTinSDRepository.findById(thongTinSd.getMaTT()).orElse(null);
         if (existingThongTinSd != null && existingThongTinSd.getTGMuon() == null) {
-                thongTinSDRepository.delete(existingThongTinSd);
+            thongTinSDRepository.delete(existingThongTinSd);
         }
     }
 
@@ -84,7 +84,6 @@ public class ThongTinSdService {
         }
         return ttSuDungDTOList;
     }
- 
 
     public ThongTinSdDTO convertToDTO(ThongTinSd ttsd) {
         ThongTinSdDTO ttsdDTO = new ThongTinSdDTO();
@@ -96,5 +95,16 @@ public class ThongTinSdService {
         ttsdDTO.setTGTra(ttsd.getTGTra());
         ttsdDTO.setTGDatCho(ttsd.getTGDatCho());
         return ttsdDTO;
+    }
+
+    // nếu thiết bị free thì return true, ngược lại thì false
+    public boolean isDeviceFree(long maTB, LocalDateTime timeDatCho) {
+        String ngayDatCho = timeDatCho.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        Optional<ThongTinSd> ttSd = thongTinSDRepository.checkReservation(maTB, ngayDatCho+"%");
+
+        if (ttSd.isPresent()) {
+            return false;
+        } 
+        return true;
     }
 }

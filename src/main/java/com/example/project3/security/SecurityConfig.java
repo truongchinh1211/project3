@@ -42,7 +42,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/user/register").permitAll()
                         .requestMatchers("/api/v1/user/forget-password").permitAll()
                         .requestMatchers("/api/v1/user/reset-password/**").permitAll()
-                        .requestMatchers("api/v1/thietbi/*").permitAll()
                         .anyRequest().authenticated())
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),jwtService,thanhVienService))
                 .exceptionHandling((httpSecurityExceptionHandlingConfigurer ->

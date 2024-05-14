@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const urlParams = window.location.href;
     let url = new URL(urlParams);
     console.log(urlParams);
-    var search = url.searchParams.get("email");
+    var search = url.searchParams.get("token");
     console.log(search);
 
     const newPassword = document.getElementById("newPassword").value;
@@ -45,5 +45,3 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 });
-
-

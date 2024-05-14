@@ -5,6 +5,7 @@ import com.example.project3.entity.ThanhVien;
 import com.example.project3.exception.ResourceNotFoundException;
 import com.example.project3.service.ThanhVienService;
 import com.example.project3.service.JwtService;
+import com.example.project3.service.MailService;
 import com.nimbusds.jose.JOSEException;
 import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
@@ -21,14 +22,13 @@ import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
-
 @RestController
 @RequestMapping("/api/v1/user")
 @CrossOrigin("*")
 public class ThanhVienController {
+
     @Autowired
     ThanhVienService thanhVienService;
-
 
     @Autowired
     JwtService jwtService;
@@ -40,7 +40,7 @@ public class ThanhVienController {
     }
 
     @PostMapping("/login")
-        public ResponseEntity<Map<String, Object>> checkLogin(@RequestBody Map<String, String> loginRequest) throws JOSEException {
+    public ResponseEntity<Map<String, Object>> checkLogin(@RequestBody Map<String, String> loginRequest) throws JOSEException {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
         ThanhVienDTO thanhVienDTO = thanhVienService.login(email, password);
@@ -51,7 +51,6 @@ public class ThanhVienController {
         return ResponseEntity.ok(response);
     }
 
-    
     @GetMapping("/info")
     public ResponseEntity<ThanhVienDTO> getInfo() {
         return ResponseEntity.ok(getFromToken());
@@ -81,25 +80,32 @@ public class ThanhVienController {
         response.put("message", "Đổi mật khẩu thành công!!!");
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/forget-password")
-    public ResponseEntity<?> forgetPassword(@RequestBody Map<String, String> emailRequest) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<?> forgetPassword(@RequestBody Map<String, String> emailRequest) throws MessagingException, UnsupportedEncodingException, JOSEException {
         String email = emailRequest.get("email");
         return ResponseEntity.ok(thanhVienService.forgetPassword(email));
     }
 
-    @PostMapping("/reset-password/{email}")
-    public ResponseEntity<?> resetPassword(@RequestBody Map<String,String> passwordReset
-            , @PathVariable String email) {
-        String newPass = passwordReset.get("newPass");
-        String confirm = passwordReset.get("confirm");
-        
-        return ResponseEntity.ok(thanhVienService.resetPassword(newPass, confirm, email));
+    @PostMapping("/reset-password/{token}")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> passwordReset,
+             @PathVariable String token) {
+        if (jwtService.isValidToken(token)) {
+            String email = jwtService.extractEmailFromToken(token);
+            String newPass = passwordReset.get("newPass");
+            String confirm = passwordReset.get("confirm");
+            
+            boolean flag = thanhVienService.resetPassword(newPass, confirm, email);
+            
+            
+            return ResponseEntity.ok(flag);
+        }
+        else throw new RuntimeException("token not valid");
     }
-    
+
     @PostMapping("/register")
     public ResponseEntity<?> createThanhVien(@RequestBody ThanhVienDTO dTO) {
-        
+
         return new ResponseEntity<>(thanhVienService.create(dTO), HttpStatus.CREATED);
     }
 }

@@ -50,4 +50,16 @@ public class JwtService {
             return false;
         }
     }
+    
+    //func forgetpassword
+    public String generateTokenCustomize(String email) throws JOSEException {
+        JWSSigner signer = new MACSigner(secret);
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .subject(email)
+                .expirationTime(new Date(System.currentTimeMillis() + 180000))
+                .build();
+        SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
+        signedJWT.sign(signer);
+        return signedJWT.serialize();
+    }
 }

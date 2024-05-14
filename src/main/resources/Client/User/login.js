@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("token", token);
       console.log("Token in local storage:", localStorage.getItem("token"));
       console.log("Catch token:", token);
+      window.location.href = "../homepage/datcho.html";
     });
   });
 });

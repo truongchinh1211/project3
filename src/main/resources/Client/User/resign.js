@@ -1,5 +1,5 @@
 function generateRandomMaTV() {
-  return Math.floor(Math.random() * 9000000000) + 1000000000;
+  return Math.floor(Math.random() * 90000000) + 10000000;
 }
 document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("submit", function (event) {
@@ -37,12 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return response.json();
       })
       .then((data) => {
-        if (data.success) {
           alert("Registration successful.");
           window.location.href = "./login.html";
-        } else {
-          alert("Registration failed. " + data.message);
-        }
       })
       .catch((error) => {
         console.error("Error:", error);

@@ -9,7 +9,7 @@ document.addEventListener("submit", function (event) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ username: username, password: password }),
+    body: JSON.stringify({ email: username, password: password }),
   })
     .then((response) => response.json())
     .then((data) => {

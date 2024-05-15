@@ -6,6 +6,7 @@ var headerAuthorization = `Bearer ${localStorage.getItem("token")}`;
 
 function loadListThietBi() {
     return new Promise(function (myResolve, myReject) {
+
         $.ajax({
             url: "http://localhost:8080/api/v1/thietbi",
             type: "get",
@@ -76,10 +77,10 @@ function loadBtn() {
         // }
 
         var button = $(this);
-        
+
         button.prop("disabled", true);
         button.html('<i class="spinner-border spinner-border-sm"></i> Đang Đặt Chỗ...');
- 
+
 
         let index = $(this).attr("index")
         let formData = {
@@ -99,7 +100,7 @@ function loadBtn() {
                     "Authorization": headerAuthorization
                 },
                 success: function (data) {
-                    $("#message-modal").removeClass()   
+                    $("#message-modal").removeClass()
                     $("#message-modal").addClass("text-success")
                     $("#message-modal").text("Đặt chỗ thành công!!")
                     button.prop("disabled", false);
@@ -122,7 +123,7 @@ function loadBtn() {
 
 
 
-    $(".searchBtn").click (function () {
+    $(".searchBtn").click(function () {
         var keyword = $(".searchText").val()
         $.ajax({
             url: `http://localhost:8080/api/v1/thietbi?keyword=${keyword}`,
@@ -155,13 +156,35 @@ function loadBtn() {
                 })
                 $(".table-body").html(html);
 
-          
+
 
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Request failed:", textStatus, errorThrown);
             }
         });
+    })
+
+
+    $(".datcho-nav").click( function () {
+        $(".profile-nav").removeClass("active");
+        $(this).addClass("active")
+
+        $("#datcho-layout").removeClass("d-none")
+        $("#profile-layout").addClass("d-none")
+    })
+
+    $(".profile-nav").click( function () {
+        $(".datcho-nav").removeClass("active");
+        $(this).addClass("active")
+    
+        $("#profile-layout").removeClass("d-none")
+        $("#datcho-layout").addClass("d-none")
+    })
+
+    $("#logout").click(function() {
+        localStorage.removeItem("token");
+        window.location.replace("../User/login.html") ;
     })
 
 }
@@ -171,10 +194,6 @@ $(document).ready(function () {
     loadListThietBi().then(function () {
         loadBtn();
     });
-
-
-
-
 
 })
 

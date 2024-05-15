@@ -1,6 +1,6 @@
 
-// var token = `Bearer ${localStorage.getItem("token")}`;
-var token = `Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTU2Nzg2MjIsInN1YiI6ImFAZ21haWwuY29tIn0.GYCuROwNPcGiA8O1lEVy6P9mkZJgzscK2ok6c2J3JUw`;
+ var token = `Bearer ${localStorage.getItem("token")}`;
+//var token = `Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTU2Nzg2MjIsInN1YiI6ImFAZ21haWwuY29tIn0.GYCuROwNPcGiA8O1lEVy6P9mkZJgzscK2ok6c2J3JUw`;
 
 function liveToast(message, isSuccess) {
   if (isSuccess) {

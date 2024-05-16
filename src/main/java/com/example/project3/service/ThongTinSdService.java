@@ -10,6 +10,8 @@ import com.example.project3.exception.ResourceNotFoundException;
 import com.example.project3.repository.ThanhVienRepository;
 import com.example.project3.repository.ThietBiRepository;
 import com.example.project3.repository.ThongTinSDRepository;
+
+import java.time.Duration;
 import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,7 +53,10 @@ public class ThongTinSdService {
         if (thongTinSDRepository.findReservations(thietBi.getMaTB(), thongTinSd.getTGDatCho().toLocalDate()).isPresent()) {
             throw new ResourceNotFoundException("Thiết bị đã được đặt chỗ vào ngày này!!");
         }
-        scheduler.schedule(() -> check(thongTinSd), 1, TimeUnit.HOURS);
+        LocalDateTime reservationTime = thongTinSd.getTGDatCho();
+        LocalDateTime scheduledTime = reservationTime.plusHours(1);
+        long delay = Duration.between(LocalDateTime.now(), scheduledTime).toMillis();
+        scheduler.schedule(() -> check(thongTinSd), delay, TimeUnit.MILLISECONDS);
         return ThongTinSdDTO.convertToDTO(thongTinSDRepository.save(thongTinSd));
 
     }
